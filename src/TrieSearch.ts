@@ -1,27 +1,27 @@
-interface TrieNode {
-  children: Map<string, TrieNode>;
-  candidate: string | null;
+interface TrieNode<T> {
+  children: Map<string, TrieNode<T>>;
+  candidate: T | null;
 }
 
-export class TrieSearch {
-  root: TrieNode;
+export class TrieSearch<T = string> {
+  root: TrieNode<T>;
 
   constructor() {
     this.root = {
-      children: new Map<string, TrieNode>(),
+      children: new Map<string, TrieNode<T>>(),
       candidate: null,
     };
   }
 
-  add(word: string) {
+  add(word: string, candidate: T) {
     for (var i = 0, current = this.root; i < word.length; i++) {
       const node = current.children.get(word[i]);
       if (node) {
         current = node;
       } else {
         const newNode = {
-          children: new Map<string, TrieNode>(),
-          candidate: i === word.length - 1 ? word : null,
+          children: new Map<string, TrieNode<T>>(),
+          candidate: i === word.length - 1 ? candidate : null,
         };
         current.children.set(word[i], newNode);
         current = newNode;
@@ -29,7 +29,8 @@ export class TrieSearch {
     }
   }
 
-  prefixSearch(prefix: string): string[] {
+  prefixSearch(prefix: string): T[] {
+    prefix = prefix.toUpperCase();
     for (var i = 0, current = this.root; i < prefix.length; i++) {
       const node = current.children.get(prefix[i]);
       if (node) {
@@ -44,9 +45,9 @@ export class TrieSearch {
     return [];
   }
 
-  private getAllMatches(from: TrieNode): string[] {
-    let stack: TrieNode[] = [from];
-    let matches: string[] = [];
+  private getAllMatches(from: TrieNode<T>): T[] {
+    let stack: TrieNode<T>[] = [from];
+    let matches: T[] = [];
 
     while (stack.length > 0) {
       const current = stack.pop();
