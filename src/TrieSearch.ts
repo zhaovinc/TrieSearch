@@ -3,7 +3,7 @@ interface TrieNode<T> {
   candidate: T | null;
 }
 
-export class TrieSearch<T = string> {
+export class TrieSearch<T> {
   root: TrieNode<T>;
 
   constructor() {
@@ -14,10 +14,14 @@ export class TrieSearch<T = string> {
   }
 
   add(word: string, candidate: T) {
+    word = word.toUpperCase();
     for (var i = 0, current = this.root; i < word.length; i++) {
       const node = current.children.get(word[i]);
       if (node) {
         current = node;
+        if (i === word.length - 1) {
+          current.candidate = candidate;
+        }
       } else {
         const newNode = {
           children: new Map<string, TrieNode<T>>(),
