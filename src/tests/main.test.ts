@@ -13,7 +13,10 @@ test("adds 1 + 2 to equal 3", () => {
   const search1 = trie.prefixSearch("ab");
   const search2 = trie.prefixSearch("abc");
   const search3 = trie.prefixSearch("lmed");
-  expect(search1.length).toBe(1);
-  expect(search2.length).toBe(1);
+  const search4 = trie.prefixSearch("az");
+
+  expect(search1.length).toBe(3);
+  expect(search2.length).toBe(2);
   expect(search3.length).toBe(1);
+  expect(search4.length).toBe(0);
 });

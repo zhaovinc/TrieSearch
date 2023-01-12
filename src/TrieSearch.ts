@@ -1,5 +1,6 @@
 interface TrieNode {
   children: Map<string, TrieNode>;
+  candidate: string | null;
 }
 
 export class TrieSearch {
@@ -8,6 +9,7 @@ export class TrieSearch {
   constructor() {
     this.root = {
       children: new Map<string, TrieNode>(),
+      candidate: null,
     };
   }
 
@@ -19,6 +21,7 @@ export class TrieSearch {
       } else {
         const newNode = {
           children: new Map<string, TrieNode>(),
+          candidate: i === word.length - 1 ? word : null,
         };
         current.children.set(word[i], newNode);
         current = newNode;
@@ -31,11 +34,31 @@ export class TrieSearch {
       const node = current.children.get(prefix[i]);
       if (node) {
         current = node;
+        if (i === prefix.length - 1) {
+          return this.getAllMatches(current);
+        }
       } else {
         break;
       }
     }
     return [];
+  }
+
+  private getAllMatches(from: TrieNode): string[] {
+    let stack: TrieNode[] = [from];
+    let matches: string[] = [];
+
+    while (stack.length > 0) {
+      const current = stack.pop();
+      if (!current) break;
+
+      if (current.candidate) {
+        matches.push(current.candidate);
+      }
+      stack.push(...Array.from(current.children.values()));
+    }
+
+    return matches;
   }
 
   stringify(): string {
